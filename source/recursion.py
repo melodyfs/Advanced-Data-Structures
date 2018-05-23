@@ -1,4 +1,5 @@
 #!python
+import time
 
 def fibonacci(n):
     """fibonacci(n) returns the n-th number in the Fibonacci sequence,
@@ -11,8 +12,8 @@ def fibonacci(n):
         raise ValueError('fibonacci is undefined for n = {!r}'.format(n))
     # Implement fibonacci_recursive, _memoized, and _dynamic below, then
     # change this to call your implementation to verify it passes all tests
-    return fibonacci_recursive(n)
-    # return fibonacci_memoized(n)
+    # return fibonacci_recursive(n)
+    return fibonacci_memoized(n)
     # return fibonacci_dynamic(n)
 
 
@@ -26,11 +27,20 @@ def fibonacci_recursive(n):
         return fibonacci_recursive(n - 1) + fibonacci_recursive(n - 2)
 
 
-def fibonacci_memoized(n):
-    # TODO: Memoize the fibonacci function's recursive implementation here
-    pass
-    # Once implemented, change fibonacci (above) to call fibonacci_memoized
-    # to verify that your memoized implementation passes all test cases
+def fibonacci_memoized(n, memos={}):
+    # Memoize the fibonacci function's recursive implementation
+
+    # base case
+    if n in memos:
+        return memos[n]
+    else:
+        if n == 0 or n == 1:
+            memos[n] = n
+            return fibonacci_memoized(n, memos)
+        else:
+            memos[n] = fibonacci_memoized(n-1, memos) + fibonacci_memoized(n-2, memos)
+            return memos[n]
+
 
 
 def fibonacci_dynamic(n):
@@ -45,8 +55,11 @@ def main():
     args = sys.argv[1:]  # Ignore script file name
     if len(args) == 1:
         num = int(args[0])
+        start_time = time.time()
         result = fibonacci(num)
+        end_time = time.time()
         print('fibonacci({}) => {}'.format(num, result))
+        print('running time: {}'.format(end_time - start_time))
     else:
         print('Usage: {} number'.format(sys.argv[0]))
 
